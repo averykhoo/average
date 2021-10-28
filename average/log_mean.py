@@ -1,37 +1,6 @@
 import math
 
-try:
-    from fastcache import clru_cache as lru_cache
-except ModuleNotFoundError:
-    from functools import lru_cache
-
-
-def general_mean(*xs, dim=1):
-    """
-    https://en.wikipedia.org/wiki/Generalized_mean
-
-    special cases:
-    dim=-inf -> minimum
-    dim=-1   -> harmonic mean
-             -- geometric-harmonic mean would fit in here
-    dim=0    -> geometric mean
-             -- logarithmic mean would fit in here
-             -- arithmetic-geometric mean would fit in here
-    dim=1    -> arithmetic mean
-    dim=2    -> root mean square (quadratic mean)
-    dim=3    -> cubic mean
-             -- contra-harmonic mean would fit in here
-    dim=inf  -> maximum
-    """
-    if dim == 0:
-        # geometric mean
-        # return math.prod(xs) ** (1 / len(xs))  # `math.prod` is only available in Python 3.8 and above
-        return math.exp(sum(map(math.log, xs))) ** (1 / len(xs))
-    elif dim == math.inf:
-        return max(xs)
-    elif dim == -math.inf:
-        return min(xs)
-    return (sum(x ** dim for x in xs) / len(xs)) ** (1 / dim)
+from functools import lru_cache
 
 
 @lru_cache(maxsize=65536)
