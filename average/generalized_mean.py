@@ -56,4 +56,82 @@ def generalized_mean(xs, dim=1):
 
 
 def root_mean_square(xs):
+    """
+    special case since (excepting some really smart optimizations) I think x * x should be faster than x ** 2
+    and I assume math.sqrt is somehow better than x ** 0.5
+    """
     return math.sqrt(statistics.mean(x * x for x in xs))
+
+
+def generalized_f_mean(xs, f, f_inv=None):
+    """
+    https://en.wikipedia.org/wiki/Quasi-arithmetic_mean
+
+    The function `f` must be monotonic, and `f_inv` must be its inverse.
+    It's not a great idea to compute the inverse of some arbitrary function f, but it can be done, albeit slowly
+    Newton's method might work better here, but binary search will suffice for now
+    """
+    if f_inv is None:
+        def f_inv(y):
+            hi = 1
+            lo = -1
+
+            # find bounds
+            if f(1) < f(2):  # monotonically increasing
+                while f(hi) < y:
+                    hi *= 2
+                while f(lo) > y:
+                    lo *= 2
+            else:
+                while f(hi) > y:
+                    hi *= 2
+                while f(lo) < y:
+                    lo *= 2
+
+            # binary search
+            while lo <= hi and hi - lo > 1e-15:
+                x = (lo + hi) / 2
+                if f(x) < y < f(hi) or f(x) > y > f(hi):
+                    lo = x
+                elif f(x) < y < f(lo) or f(x) > y > f(lo):
+                    hi = x
+                else:
+                    return x
+            return lo
+
+    return f_inv(statistics.mean(map(f, xs)))
+
+
+def _generalized_mean(xs, dim):
+    """
+    illustrates that the generalized f-mean is a further generalization of the generalized mean
+    """
+    if dim == 0:
+        return _geometric_mean(xs)
+    else:
+        return generalized_f_mean(xs, lambda x: math.pow(x, dim), lambda y: math.pow(y, 1 / dim))
+
+
+def _geometric_mean(xs):
+    """
+    illustrates how much of a special case the geometric mean is, since it doesn't really work with (dim := 0)
+    """
+    return generalized_f_mean(xs, math.log, math.exp)
+
+
+def _log_sum_exp(xs):
+    """
+    https://en.wikipedia.org/wiki/LogSumExp
+    """
+    return generalized_f_mean(xs, math.log, math.exp) + math.log(len(xs))
+
+
+def _p_norm(xs, p):
+    """
+    https://en.wikipedia.org/wiki/Lp_space#The_p-norm_in_finite_dimensions
+    """
+    if p <= 0:
+        raise ValueError('p must be positive')
+    if p == math.inf:
+        return max(map(abs, xs))
+    return generalized_f_mean(map(abs, xs), lambda x: x ** p, lambda y: y ** (1 / p))
