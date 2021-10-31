@@ -15,3 +15,6 @@ Unnecessarily many ways to get an average of a bunch of numbers
   * use a table with the dim in a column
 * code
   * stolarsky mean + divided differences (more than 2 variables)
+  * gini mean
+  * toader mean
+  * all the two-variable means, but in a separate package?
