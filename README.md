@@ -11,10 +11,9 @@ Unnecessarily many ways to get an average of a bunch of numbers
   * zero elem list -> create new exception
   * list of all the same elem -> just return the elem
 * docs
-  * ordering of means via generalized mean, lehmer mean, stolarsky mean
+  * ordering of means via generalized mean, lehmer mean, stolarsky mean (??? but doesn't apply to multivariate case)
   * use a table with the dim in a column
 * code
-  * stolarsky mean + divided differences (more than 2 variables)
-  * gini mean
+  * rewrite logarithmic mean to just calculate the constants (weights) at each step since that's probably faster
   * toader mean
   * all the two-variable means, but in a separate package?

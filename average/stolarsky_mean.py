@@ -28,6 +28,8 @@ def stolarsky_mean_2(ws, xs, ys, r, s):
     no clue what Y is supposed to be
 
     note that the special cases of the 2-var stolarsky mean are no longer the same special cases for this
+
+    note that if you set W = 1 and Y = 0, then you can sort of get the lehmer mean / gini mean
     """
     assert len(ws) == len(xs) == len(ys)
     assert r != 0
