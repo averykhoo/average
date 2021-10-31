@@ -31,6 +31,7 @@ def log_mean(*xs):
         return ret
     else:
         # https://www.survo.fi/papers/logmean.pdf (page 7, formula 14)
+        # todo: does this match the output of the generalized stolarsky mean?
         ret = (len(xs) - 1) * (log_mean(*xs[1:]) - log_mean(*xs[:-1])) / (math.log(xs[-1]) - math.log(xs[0]))
         assert xs[0] < ret < xs[-1], (xs, ret)
         return ret
