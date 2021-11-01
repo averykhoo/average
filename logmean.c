@@ -1,6 +1,6 @@
 #include "muste.h"
 /* !logmean.c 27.8.2002/SM (27.8.2002)
-   Logarithmic mean (Original solution presented in 1974 by SM)
+   Logarithmic mean (Original solution presented in 1974 by SM
 */
 
 #include <stdio.h>

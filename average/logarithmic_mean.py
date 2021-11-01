@@ -16,6 +16,7 @@ def log_mean(*xs):
     not sure if there's a similar problem in base e, but doesn't seem like it
 
     ERROR when xs = [92, 93, 94, 95, 96, 97, 98, 99]
+    maybe because it can't handle differences of about 1% between items?
     """
     xs = sorted(xs)  # helps with caching and dealing with duplicates
     if len(xs) == 0:
@@ -83,7 +84,13 @@ if __name__ == '__main__':
     # print(log_mean(92, 93, 94, 95, 96, 97, 98, 99))
     # print(log_mean(52, 53, 54, 55, 56, 57, 58, 59))
     # print(log_mean(2, 3, 4, 5, 6, 7, 8, 9))
-    xs = [2, 3, 4, 5, 6, 7, 8, 9]
-    for i in range(10):
-        print(10 * i, log_mean(*[10 * i + x for x in xs]))
+    # xs = [2, 3, 4, 5, 6, 7, 8, 9]
+    # for i in range(10):
+    #     print(10 * i, log_mean(*[10 * i + x for x in xs]))
     # print(log_mean( 73, 74, 75, 76, 77, 78,79))
+    xs = [92, 93, 94, 95, 96, 97, 98, 99]
+    for i in range(-1000, 0):
+        try:
+            print(i, log_mean(*[x+i/100 for x in xs]))
+        except Exception as e:
+            print(e)
