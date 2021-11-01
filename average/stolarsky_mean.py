@@ -40,3 +40,9 @@ def stolarsky_mean_2(ws, xs, ys, r, s):
             sum(w * (x ** s - y ** s) ** 2 for w, x, y in zip(ws, xs, ys)) /
             sum(w * (x ** r - y ** r) ** 2 for w, x, y in zip(ws, xs, ys))
             ) ** (1 / (2 * (s - r)))
+
+if __name__ == '__main__':
+
+    xs = [2, 3, 4, 5, 6, 7, 8, 9]
+    for i in range(10):
+        print(10*i, stolarsky_mean_1([10*i+x for x in xs],1,2))
