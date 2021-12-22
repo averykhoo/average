@@ -20,4 +20,4 @@ Unnecessarily many ways to get an average of a bunch of numbers
   * toader mean
   * all the two-variable means, but in a separate package?
   * automatically apply divided differences to 2-element means?
-  * 
+  * refer to muste.7z for the code for logarithmic means
