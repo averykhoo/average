@@ -1,7 +1,6 @@
 """
 direct python port of logmean.c (revision 191, Modified Fri Jul 13 10:18:28 2012 UTC by sund)
 """
-import math
 from functools import lru_cache
 from typing import List
 
@@ -536,6 +535,74 @@ def comp2():
 
     return 1
 
+
+import math
+
+# calculate the mean of a mathematical series using a series of nested loops
+def comp2():
+    # find the value of powmax in the spb array using the spfind function
+    i = spfind("POWMAX")
+    if i >= 0:
+        powmax = atoi(spb[i])
+    # ensure that powmax does not exceed the maximum allowed value
+    if powmax > POWMAX:
+        powmax = POWMAX
+
+    # store the logarithms of the elements in the logx array in the first
+    # column of the powlog array
+    for i in range(n):
+        powlog[i][0] = logx[i]
+    # initialize the mean to 1
+    lmean = 1.0
+    m = 1
+    # initialize the factorial to 1
+    fact = 1.0
+    # loop until the mean has converged or the maximum power limit has been reached
+    while True:
+        # initialize the pot array to 0
+        pot = [0] * n
+        # set the last element of the pot array to m
+        pot[n - 1] = m
+        # initialize the number of combinations to 1
+        ncomb = 1
+        # initialize the sum of the terms in the series to 0
+        term2 = 0.0
+        # loop until the end of the series is reached
+        while True:
+            # initialize the current term in the series to 1
+            term1 = 1.0
+            # iterate over the elements in the pot array
+            for i in range(n):
+                # if the current element in the pot array is not 0, multiply
+                # the current term in the series by the corresponding element
+                # in the powlog array raised to the power of the current element
+                # in the pot array minus 1
+                if pot[i] != 0:
+                    term1 *= math.pow(powlog[i][pot[i] - 1], pot[i])
+            # add the current term in the series to the sum of the terms
+            term2 += term1
+            # update the pot array using the next_m_distr function
+            i = next_m_distr(m, n, pot)
+            # if the next_m_distr function returns -1, we have reached the end of the series
+            if i < 0:
+                break
+            # increment the number of combinations
+            ncomb += 1
+        # multiply the factorial by m
+        fact *= m
+        # add the current mean of the series to the sum of the terms divided by
+        # the number of combinations and the factorial
+        lmean += term2 / ncomb / fact
+        # if the difference between the current and previous means is 0, or the
+        # maximum power limit has been reached, exit the loop
+        if math.isclose(lmean - lmean1, 0.0) or m >= powmax:
+            break
+        # store the current mean as the previous mean for the next iteration
+        lmean1 = lmean
+        # increment m and update the powlog array with the new powers of the logx array
+        m += 1
+        for i in range(n):
+            powlog[i][m - 1] = logx[i] * powlog[
 
 # static double polm(int n,int m)
 #     {
