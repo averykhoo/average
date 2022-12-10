@@ -125,6 +125,92 @@ NMAX = 200000
 #         s_end(argv);
 #         }
 #
+
+def muste_logmean(argv):
+    i = 0
+
+    s_init(argv)
+
+    if g < 2:
+        sur_print("\nUsage: LOGMEAN <data>,<var>,L")
+        WAIT
+        return
+
+    results_line = 0
+    if g > 3:
+        results_line = edline2(word[3], 1, 1)
+        if results_line == 0:
+            return
+
+    d1 = None
+    d2 = None
+
+    i = spec_init(r1 + r - 1)
+    if i < 0:
+        return
+
+    i = data_read_open(word[1], & dat)
+    if i < 0:
+        return
+
+    i = conditions( & dat)
+    if i < 0:
+        return
+
+    prind = 0
+    i = hae_apu("prind", sbuf)
+    if i:
+        prind = atoi(sbuf)
+    if ((i = spfind("PRIND")) >= 0):
+        prind = atoi(spb[i])
+
+    xvar = varfind( & dat, word[2])
+    if xvar < 0:
+        return
+
+    method = 3
+    i = spfind("METHOD")
+    if i >= 0:
+        method = atoi(spb[i])
+
+    term_comp = 0
+    i = spfind("TERM_COMP")
+    if i >= 0:
+        term_comp = atoi(spb[i])
+
+    i = load_data()
+    if i < 0:
+        return
+    if n < 2:
+        sur_print("\nAt least 2 observations needed!")
+        WAIT
+        return
+
+    if method > 3:
+        if method == 5:
+            comp5()
+        else:
+            comp4()
+    elif method == 3:
+        comp3()
+    elif method == 2:
+        comp2()
+    elif method == 1:
+        comp1()
+    else:
+        comp_x(-method)
+
+    i = output_open(eout)
+    if i < 0:
+        return
+
+    i = spfind("OTHERS")
+    if i >= 0 and atoi(spb[i]) > 0:
+        other_means()
+
+    output_close(eout)
+    s_end(argv)
+
 def load_data(data, method, term_comp):
     a: float
     _min: float = 1e308
@@ -255,7 +341,29 @@ def comp_x(n, x, log_x, k):
 #     lmean=fact*d1[0];
 #     return(1);
 #     }
+def comp4():
+    i = 0
+    j = 0
+    fact = 0
 
+    d1 = (double *)muste_malloc(n*sizeof(double))
+    d2 = (double *)muste_malloc(n*sizeof(double))
+
+    fact = 1.0
+    lmean = 0
+    for i in range(1, n):
+        fact *= (double)i
+
+    for i in range(0, n):
+        d1[i] = x[i]
+
+    for j in range(0, n-1):
+        for i in range(0, n-j-1):
+            d2[i] = (d1[i+1]-d1[i]) / (logx[i+j+1] - logx[i])
+        for i in range(0, n-j-1):
+            d1[i] = d2[i]
+    lmean = fact * d1[0]
+    return 1
 
 # static int comp5()
 #     {
@@ -291,7 +399,29 @@ def comp_x(n, x, log_x, k):
 #     return(1);
 #     }
 #
+def comp5():
+    i = 0
+    j = 0
+    fact = 0
 
+    d1 = (double *)muste_malloc(n*sizeof(double))
+    d2 = (double *)muste_malloc(n*sizeof(double))
+
+    fact = 1.0
+    lmean = 0
+
+    for i in range(0, n):
+        d1[i] = x[i]
+
+    for j in range(0, n-1):
+        for i in range(0, n-j-1):
+            d2[i] = fact * (d1[i+1]-d1[i]) / (logx[i+j+1] - logx[i])
+        for i in range(0, n-j-1):
+            d1[i] = d2[i]
+        fact += 1
+
+    lmean = d1[0]
+    return 1
 
 # #define MMAX 200000
 # #define POWMAX 60
