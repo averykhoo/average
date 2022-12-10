@@ -600,6 +600,55 @@ def polm(n: int, m: int) -> float:
     return s
 
 
+#
+# given the following code:
+#
+# ```
+# for (i=0; i<n; ++i) powlog[i][0]=logx[i];
+# ...
+# for (i=0; i<n; ++i)
+#     {
+#     if (pot[i]!=0) term1*=powlog[i][pot[i]-1];
+#     }
+# ...
+# for (i=0; i<n; ++i) powlog[i][m-1]=logx[i]*powlog[i][m-2];
+# ```
+# describe powlog
+
+# powlog is a two-dimensional array where each element powlog[i][j] represents the jth power of the natural logarithm
+# of the ith element of x. It is used to store the results of these calculations so they can be used later without
+# having to recompute them.
+#
+# In the first line of the code snippet, powlog[i][0] is set to logx[i], which is the natural logarithm of the
+# ith element of x.
+#
+# In the second line of the code snippet, powlog[i][pot[i]-1] is multiplied with term1 for each i in the range
+# from 0 to n. pot[i] is assumed to be the power that the ith element of x is raised to, so powlog[i][pot[i]-1]
+# is the value of the (pot[i]-1)th power of the natural logarithm of the ith element of x.
+#
+# In the third line of the code snippet, powlog[i][m-1] is set to the product of logx[i] and powlog[i][m-2].
+# This calculates the m-1th power of the natural logarithm of the ith element of x by multiplying the (m-2)th power
+# by the natural logarithm of x[i].
+#
+#
+#
+#
+# averykhoo@gmail.com
+# logx is equivalent to [math.log(x) for x in xs]. describe polm
+
+# polm() is a recursive function that calculates the mth power of the natural logarithm of the sum of the elements
+# in a list x. It uses a two-dimensional array pm as a cache to store previously calculated results, so that they
+# can be re-used instead of being recomputed.
+#
+# The function takes two arguments: n, the length of the list x, and m, the power to which the natural logarithm
+# of the sum of the elements in x should be raised. If m equals 1, the function returns the sum of the natural
+# logarithm of each element in x. If n equals 1, the function returns the m-1th power of the natural logarithm of
+# the first element in x. Otherwise, the function calculates the mth power of the natural logarithm of the sum of
+# the elements in x by summing the mth power of the natural logarithm of each element in x, the (m-1)th power of
+# the natural logarithm of each element in x multiplied by the result of calling polm() with n-1 and i for each i
+# in the range from 1 to m, and the result of calling polm() with n-1 and m. The result is then cached in pm and
+# returned.
+
 @lru_cache
 def polm_cached(n, m):
     # If m equals 1, sum the log of each x value in the range from 0 to n
@@ -618,6 +667,32 @@ def polm_cached(n, m):
     for i in range(1, m):
         s += powlog[n - 1][m - i - 1] * polm(n - 1, i)
     s += polm(n - 1, m)
+
+    return s
+
+
+from functools import lru_cache
+
+
+@lru_cache
+def polm2(xs, m):
+    # If m equals 1, sum the log of each element in xs
+    if m == 1:
+        return sum(math.log(x) for x in xs)
+
+    # If the length of xs equals 1, get the m-1th power of the log of the 0th element of xs
+    if len(xs) == 1:
+        return math.pow(math.log(xs[0]), m - 1)
+
+    # Calculate the mth power of the log of the sum of the elements in xs
+    # and add it to the sum of the (m-1)th power of the log of each element in xs
+    # multiplied by the result of calling polm with the sublist of xs without the first element
+    # and i, for each i in the range from 1 to m
+    # Then add the result of calling polm with the sublist of xs without the first element and m
+    s = math.pow(math.log(sum(xs)), m)
+    for i in range(1, m):
+        s += math.pow(math.log(xs[i]), m - 1) * polm(xs[1:], i)
+    s += polm(xs[1:], m)
 
     return s
 
