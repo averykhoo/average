@@ -2,6 +2,7 @@
 direct python port of logmean.c (revision 191, Modified Fri Jul 13 10:18:28 2012 UTC by sund)
 """
 import math
+from functools import lru_cache
 from typing import List
 
 NMAX = 200000
@@ -596,6 +597,28 @@ def polm(n: int, m: int) -> float:
     s += polm(n - 1, m)
 
     pm[n - 1][m - 1] = s
+    return s
+
+
+@lru_cache
+def polm_cached(n, m):
+    # If m equals 1, sum the log of each x value in the range from 0 to n
+    if m == 1:
+        return sum(logx[:n])
+
+    # If n equals 1, get the m-1th power of the log of the 0th element of powlog
+    if n == 1:
+        return powlog[0][m - 1]
+
+    # Calculate the mth power of the log of the nth element of powlog
+    # and add it to the sum of the (m-1)th power of the log of the (n-1)th element of powlog
+    # multiplied by the result of calling polm with n-1 and i, for each i in the range from 1 to m
+    # Then add the result of calling polm with n-1 and m
+    s = powlog[n - 1][m - 1]
+    for i in range(1, m):
+        s += powlog[n - 1][m - i - 1] * polm(n - 1, i)
+    s += polm(n - 1, m)
+
     return s
 
 
