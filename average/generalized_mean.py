@@ -70,6 +70,8 @@ def generalized_f_mean(xs, f, f_inv=None):
     The function `f` must be monotonic, and `f_inv` must be its inverse.
     It's not a great idea to compute the inverse of some arbitrary function f, but it can be done, albeit slowly
     Newton's method might work better here, but binary search will suffice for now
+
+    returns f_inv(mean([f(x) for x in xs]))
     """
     if f_inv is None:
         def f_inv(y):
