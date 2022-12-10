@@ -844,15 +844,24 @@ def next_m_distr(n: int, m: int, elem1: List[int]) -> int:
     This function generates the next element of a distribution with m elements in n classes.
     The n and m parameters are in the opposite order compared to the original C code!
     """
+
+    # find the highest non-zero index in the elem1 array
     i = m - 1
     while elem1[i] == 0:
         i -= 1
+    # if the highest non-zero index is 0, return -1 to indicate that
+    # we have reached the end of the iteration
     if i == 0:
         return -1
+    # increment the element at the (i-1)th index and set the element at
+    # the m-1th index to the value of the element at the ith index minus 1
     elem1[i - 1] += 1
     elem1[m - 1] = elem1[i] - 1
+    # set all elements between the ith index and the (m-1)th index (inclusive)
+    # to 0
     for k in range(i, m - 1):
         elem1[k] = 0
+    # return 1 to indicate that the operation was successful
     return 1
 
 
