@@ -363,7 +363,53 @@ def comp_x(n, x, log_x, k):
 #     return(1);
 #     }
 #
+POWMAX = 100  # Maximum value of the powmax variable
 
+# Initialize the powlog array
+powlog = [[0 for _ in range(POWMAX)] for _ in range(n)]
+
+def comp2():
+    # Read the value of the powmax variable
+    powmax = POWMAX
+    i = spfind("POWMAX")
+    if i >= 0:
+        powmax = atoi(spb[i])
+    if powmax > POWMAX:
+        powmax = POWMAX
+
+    # Initialize the powlog and pot arrays
+    for i in range(n):
+        powlog[i][0] = logx[i]
+    lmean = 1.0
+    m = 1
+    fact = 1.0
+    while True:
+        for i in range(n):
+            pot[i] = 0
+        pot[n - 1] = m
+        ncomb = 1
+        term2 = 0.0
+        while True:
+            term1 = 1.0
+            for i in range(n):
+                if pot[i] != 0:
+                    term1 *= powlog[i][pot[i] - 1]
+            term2 += term1
+            i = next_m_distr(m, n, pot)
+            if i < 0:
+                break
+            ncomb += 1
+        fact *= m
+        lmean += term2 / ncomb / fact
+        if fabs(lmean - lmean1) == 0.0 or m >= powmax:
+            break
+        lmean1 = lmean
+        m += 1
+
+        for i in range(n):
+            powlog[i][m - 1] = logx[i] * powlog[i][m - 2]
+
+    return 1
 
 
 
