@@ -393,7 +393,33 @@ def comp_x(n, x, log_x, k):
 #     pm[n-1][m-1]=s;
 #     return(s);
 #     }
-#
+
+# output by chatgpt
+
+# Initialize the pm and powlog arrays
+pm = [[math.inf for _ in range(m)] for _ in range(n)]
+powlog = [[0 for _ in range(m)] for _ in range(n)]
+
+def polm(n: int, m: int) -> float:
+    s = pm[n - 1][m - 1]
+    if s != math.inf:
+        return s
+
+    if m == 1:
+        s = 0.0
+        for i in range(n):
+            s += logx[i]
+        pm[n - 1][m - 1] = s
+        return s
+    if n == 1:
+        s = pm[n - 1][m - 1] = powlog[0][m - 1]
+        return s
+    s = powlog[n - 1][m - 1]
+    for i in range(1, m):
+        s += powlog[n - 1][m - i - 1] * polm(n - 1, i)
+    s += polm(n - 1, m)
+    pm[n - 1][m - 1] = s
+    return s
 
 
 
