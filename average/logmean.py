@@ -211,6 +211,7 @@ def muste_logmean(argv):
     output_close(eout)
     s_end(argv)
 
+
 def load_data(data, method, term_comp):
     a: float
     _min: float = 1e308
@@ -357,13 +358,14 @@ def comp4():
     for i in range(0, n):
         d1[i] = x[i]
 
-    for j in range(0, n-1):
-        for i in range(0, n-j-1):
-            d2[i] = (d1[i+1]-d1[i]) / (logx[i+j+1] - logx[i])
-        for i in range(0, n-j-1):
+    for j in range(0, n - 1):
+        for i in range(0, n - j - 1):
+            d2[i] = (d1[i + 1] - d1[i]) / (logx[i + j + 1] - logx[i])
+        for i in range(0, n - j - 1):
             d1[i] = d2[i]
     lmean = fact * d1[0]
     return 1
+
 
 # static int comp5()
 #     {
@@ -413,15 +415,16 @@ def comp5():
     for i in range(0, n):
         d1[i] = x[i]
 
-    for j in range(0, n-1):
-        for i in range(0, n-j-1):
-            d2[i] = fact * (d1[i+1]-d1[i]) / (logx[i+j+1] - logx[i])
-        for i in range(0, n-j-1):
+    for j in range(0, n - 1):
+        for i in range(0, n - j - 1):
+            d2[i] = fact * (d1[i + 1] - d1[i]) / (logx[i + j + 1] - logx[i])
+        for i in range(0, n - j - 1):
             d1[i] = d2[i]
         fact += 1
 
     lmean = d1[0]
     return 1
+
 
 # #define MMAX 200000
 # #define POWMAX 60
@@ -568,23 +571,33 @@ powlog = [[0 for _ in range(m)] for _ in range(n)]
 
 
 def polm(n: int, m: int) -> float:
+
     s = pm[n - 1][m - 1]
     if s != math.inf:
         return s
 
+    # If m equals 1, sum the log of each x value in the range from 0 to n
     if m == 1:
         s = 0.0
         for i in range(n):
             s += logx[i]
         pm[n - 1][m - 1] = s
         return s
+
+    # If n equals 1, get the m-1th power of the log of the 0th element of powlog
     if n == 1:
         s = pm[n - 1][m - 1] = powlog[0][m - 1]
         return s
+
+    # Calculate the mth power of the log of the nth element of powlog
+    # and add it to the sum of the (m-1)th power of the log of the (n-1)th element of powlog
+    # multiplied by the result of calling polm with n-1 and i, for each i in the range from 1 to m
+    # Then add the result of calling polm with n-1 and m
     s = powlog[n - 1][m - 1]
     for i in range(1, m):
         s += powlog[n - 1][m - i - 1] * polm(n - 1, i)
     s += polm(n - 1, m)
+
     pm[n - 1][m - 1] = s
     return s
 
