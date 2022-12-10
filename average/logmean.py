@@ -571,22 +571,20 @@ powlog = [[0 for _ in range(m)] for _ in range(n)]
 
 
 def polm(n: int, m: int) -> float:
-    s = pm[n - 1][m - 1]
-    if s != math.inf:
-        return s
+    # If pm[n-1][m-1] has been calculated before, return that value
+    if pm[n - 1][m - 1] != math.inf:
+        return pm[n - 1][m - 1]
 
     # If m equals 1, sum the log of each x value in the range from 0 to n
     if m == 1:
-        s = 0.0
-        for i in range(n):
-            s += logx[i]
+        s = sum(logx[:n])
         pm[n - 1][m - 1] = s
         return s
 
     # If n equals 1, get the m-1th power of the log of the 0th element of powlog
     if n == 1:
-        s = pm[n - 1][m - 1] = powlog[0][m - 1]
-        return s
+        pm[n - 1][m - 1] = powlog[0][m - 1]
+        return pm[n - 1][m - 1]
 
     # Calculate the mth power of the log of the nth element of powlog
     # and add it to the sum of the (m-1)th power of the log of the (n-1)th element of powlog
