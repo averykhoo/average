@@ -115,6 +115,15 @@ def _generalized_mean(xs, dim):
 def _geometric_mean(xs):
     """
     illustrates how much of a special case the geometric mean is, since it doesn't really work with (dim := 0)
+
+    effectively computes the following:
+    ```python
+    product = 1
+    for value in data:
+        product *= value
+
+    geometric_mean = product ** (1 / len(data))
+    ```
     """
     return generalized_f_mean(xs, math.log, math.exp)
 
