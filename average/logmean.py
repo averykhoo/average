@@ -193,9 +193,6 @@ def comp1(n, x, log_x):
     return lmean
 
 
-
-
-
 # static int comp_x(int k)
 #     {
 #     int i,j;
@@ -225,8 +222,6 @@ def comp_x(n, x, log_x, k):
                 term /= lx - x[j]
         lmean += term
     return lmean
-
-
 
 
 # static int comp4()
@@ -260,8 +255,6 @@ def comp_x(n, x, log_x, k):
 #     lmean=fact*d1[0];
 #     return(1);
 #     }
-
-
 
 
 # static int comp5()
@@ -300,8 +293,6 @@ def comp_x(n, x, log_x, k):
 #
 
 
-
-
 # #define MMAX 200000
 # #define POWMAX 60
 #
@@ -310,8 +301,6 @@ def comp_x(n, x, log_x, k):
 # static int powmax=POWMAX;
 # static double pm[MMAX][POWMAX];
 #
-
-
 
 
 # static int comp2()
@@ -369,6 +358,7 @@ POWMAX = 100  # Maximum value of the powmax variable
 # Initialize the powlog array
 powlog = [[0 for _ in range(POWMAX)] for _ in range(n)]
 
+
 def comp2():
     # Read the value of the powmax variable
     powmax = POWMAX
@@ -413,7 +403,6 @@ def comp2():
     return 1
 
 
-
 # static double polm(int n,int m)
 #     {
 #     int i;
@@ -447,6 +436,7 @@ def comp2():
 pm = [[math.inf for _ in range(m)] for _ in range(n)]
 powlog = [[0 for _ in range(m)] for _ in range(n)]
 
+
 def polm(n: int, m: int) -> float:
     s = pm[n - 1][m - 1]
     if s != math.inf:
@@ -467,8 +457,6 @@ def polm(n: int, m: int) -> float:
     s += polm(n - 1, m)
     pm[n - 1][m - 1] = s
     return s
-
-
 
 
 # static int comp3()
@@ -544,6 +532,7 @@ POWMAX = 100  # Maximum value of the powmax variable
 # Initialize the pm and powlog arrays
 pm = [[inf for _ in range(powmax)] for _ in range(n)]
 powlog = [[0 for _ in range(powmax)] for _ in range(n)]
+
 
 def comp3():
     # Read the value of the powmax variable
@@ -645,17 +634,18 @@ def next_m_distr(n: int, m: int, elem1: List[int]) -> int:
 #     }
 #
 #
-def other_means():
+def other_means(xs):
+    n = len(xs)
+    logx = [math.log(x) for x in xs]
     mean = geom_mean = hmean = 0.0
     for l in range(n):
-        mean += x[l]
+        mean += xs[l]
         geom_mean += logx[l]
-        hmean += 1.0 / x[l]
+        hmean += 1.0 / xs[l]
     mean /= n
-    geom_mean = exp(geom_mean / n)
+    geom_mean = math.exp(geom_mean / n)
     hmean = n / hmean
-    return 1
-
+    return mean, geom_mean, hmean
 
 # static int print_line(char *x)
 #         {
