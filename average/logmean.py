@@ -2,6 +2,7 @@
 direct python port of logmean.c (revision 191, Modified Fri Jul 13 10:18:28 2012 UTC by sund)
 """
 import math
+from typing import List
 
 NMAX = 200000
 
@@ -538,7 +539,63 @@ def polm(n: int, m: int) -> float:
 #     }
 #
 
+POWMAX = 100  # Maximum value of the powmax variable
 
+# Initialize the pm and powlog arrays
+pm = [[inf for _ in range(powmax)] for _ in range(n)]
+powlog = [[0 for _ in range(powmax)] for _ in range(n)]
+
+def comp3():
+    # Read the value of the powmax variable
+    powmax = POWMAX
+    i = spfind("POWMAX")
+    if i >= 0:
+        powmax = atoi(spb[i])
+    if powmax > POWMAX:
+        powmax = POWMAX
+
+    # Initialize the sum variable
+    sum = 0.0
+    if term_comp:
+        for i in range(n):
+            sum += logx[i]
+        sum /= n
+
+    # Initialize the pm and powlog arrays
+    for i in range(n):
+        for m in range(powmax):
+            pm[i][m] = inf
+        powlog[i][0] = logx[i]
+        for m in range(2, powmax + 1):
+            powlog[i][m - 1] = powlog[i][m - 2] * logx[i]
+
+    lmean = 1.0
+    m = 1
+    fact = 1.0
+    ncomb = n
+    while True:
+        term2 = polm(n, m)
+        fact *= m
+        if not term_comp:
+            lmean += term2 / ncomb / fact
+        else:
+            term3 = term2 / ncomb
+            lmean += term2 / ncomb / fact
+            aterm = 0.0
+            for i in range(n):
+                aterm += pow(logx[i], m)
+            aterm /= n
+            gterm = pow(sum, m)
+            if term3 < gterm or aterm < term3:
+                # Handle this case
+                pass
+        if fabs(lmean - lmean1) == 0.0 or m >= powmax:
+            break
+        lmean1 = lmean
+        m += 1
+        ncomb *= (n + m - 1) / m
+
+    return 1
 
 
 # static int next_m_distr(int n,int m,int *elem1) // n ja m vaihtaneet paikkojaan!
@@ -554,6 +611,24 @@ def polm(n: int, m: int) -> float:
 #         return(1);
 #         }
 #
+
+def next_m_distr(n: int, m: int, elem1: List[int]) -> int:
+    """
+    This function generates the next element of a distribution with m elements in n classes.
+    The n and m parameters are in the opposite order compared to the original C code!
+    """
+    i = m - 1
+    while elem1[i] == 0:
+        i -= 1
+    if i == 0:
+        return -1
+    elem1[i - 1] += 1
+    elem1[m - 1] = elem1[i] - 1
+    for k in range(i, m - 1):
+        elem1[k] = 0
+    return 1
+
+
 # static int other_means()
 #     {
 #     long l;
@@ -570,6 +645,18 @@ def polm(n: int, m: int) -> float:
 #     }
 #
 #
+def other_means():
+    mean = geom_mean = hmean = 0.0
+    for l in range(n):
+        mean += x[l]
+        geom_mean += logx[l]
+        hmean += 1.0 / x[l]
+    mean /= n
+    geom_mean = exp(geom_mean / n)
+    hmean = n / hmean
+    return 1
+
+
 # static int print_line(char *x)
 #         {
 #         output_line(x,eout,results_line);
