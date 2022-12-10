@@ -347,13 +347,13 @@ def comp4():
     j = 0
     fact = 0
 
-    d1 = (double *)muste_malloc(n*sizeof(double))
-    d2 = (double *)muste_malloc(n*sizeof(double))
+    d1 = (double *)(muste_malloc(n * sizeof(double)))
+    d2 = (double *)(muste_malloc(n * sizeof(double)))
 
     fact = 1.0
     lmean = 0
     for i in range(1, n):
-        fact *= (double)i
+        fact *= (double)(i)
 
     for i in range(0, n):
         d1[i] = x[i]
@@ -406,8 +406,8 @@ def comp5():
     j = 0
     fact = 0
 
-    d1 = (double *)muste_malloc(n*sizeof(double))
-    d2 = (double *)muste_malloc(n*sizeof(double))
+    d1 = (double *)(muste_malloc(n * sizeof(double)))
+    d2 = (double *)(muste_malloc(n * sizeof(double)))
 
     fact = 1.0
     lmean = 0
@@ -571,7 +571,6 @@ powlog = [[0 for _ in range(m)] for _ in range(n)]
 
 
 def polm(n: int, m: int) -> float:
-
     s = pm[n - 1][m - 1]
     if s != math.inf:
         return s
